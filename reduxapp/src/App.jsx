@@ -1,13 +1,18 @@
-import React from 'react'
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
+import Home from "./pages/home";
+import Create from "./pages/create";
+
 
 function App() {
   return (
-    <>
-     <div className='container'>
-      <h1 className='text-2xl'>hello</h1>
-      </div> 
-    </>
-  )
+    <Router> 
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create" element={<Create/>} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
