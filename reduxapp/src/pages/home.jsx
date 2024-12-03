@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../store/hooks"; 
+import { useAppSelector, useAppDispatch } from "../store/hooks";
 import { deleteUser } from "../store/auth/userSlice";
+import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 function Home() {
-  const users = useAppSelector((state) => state.user.user);
+  const users = useAppSelector((state) => state.user.users);
   const dispatch = useAppDispatch();
-console.log(users);
 
   const handleDelete = (id) => {
     dispatch(deleteUser(id));
@@ -15,7 +16,7 @@ console.log(users);
   return (
     <div className="container">
       <h2>CRUD App Using JSON</h2>
-      <Link to="/create" className="btn btn-primary">
+      <Link to="/create" className={cn(buttonVariants({ variant: "default" }))}>
         Create Items
       </Link>
       <table className="table table-striped">
@@ -34,13 +35,20 @@ console.log(users);
               <td>{user.name}</td>
               <td>{user.email}</td>
               <td>
-                <button className="btn btn-primary">Edit</button>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Delete
-                </button>
+                <div className="flex items-center gap-4">
+                  <Link
+                    to={`/edit/${user.id}`}
+                    className={cn(buttonVariants({ variant: "secondary" }))}
+                  >
+                    Edit
+                  </Link>
+                  <Button
+                    onClick={() => handleDelete(user.id)}
+                    variant="destructive"
+                  >
+                    Delete
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}

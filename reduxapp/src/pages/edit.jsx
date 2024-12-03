@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +12,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useAppDispatch } from "@/store/hooks";
-import { addUser } from "@/store/auth/userSlice";
-import { v4 as uuidv4 } from "uuid";
-import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-function Create() {
+import { useNavigate, useParams } from "react-router-dom";
+import { editUser } from "@/store/auth/userSlice";
+
+function EditUserDetails() {
+  const { id } = useParams();
+  const users = useAppSelector((state) => state.user.users);
+
+  const navigate = useNavigate();
+  const userData = users.find((user) => user.id === id);
+  console.log(userData);
+
   const dispatch = useAppDispatch();
   const formSchema = z.object({
     name: z.string().min(2, {
@@ -30,21 +37,30 @@ function Create() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: userData?.name || "",
+      email: userData?.email || "",
     },
   });
-  const navigate = useNavigate();
-  const randomBytes = uuidv4();
 
+  useEffect(() => {
+    if (userData) {
+      form.reset({
+        name: userData.name,
+        email: userData.email,
+      });
+    }
+  }, [userData, form]);
   const onSubmit = (data) => {
-    const user = { id: randomBytes, ...data };
-    dispatch(addUser(user));
-    form.reset();
+    const updatedUser = { id, ...data };
+    dispatch(editUser(updatedUser));
     navigate("/");
   };
+  if (!userData) {
+    return <div>User not found</div>;
+  }
   return (
-    <>
+    <div>
+      <h1 className="font-bold m-12">User {id}</h1>
       <div className="container mx-auto">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -78,12 +94,12 @@ function Create() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Update</Button>
           </form>
         </Form>
       </div>
-    </>
+    </div>
   );
 }
 
-export default Create;
+export default EditUserDetails;

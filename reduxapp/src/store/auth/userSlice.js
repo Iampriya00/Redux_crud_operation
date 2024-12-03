@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: [{ id: 1, name: "John Doe", email: "john.doe@example.com" }],
+  users: [
+    {
+      id: "22574b6f-ce3a-4d9b-992f-0cac4a10fdee",
+      name: "John Doe",
+      email: "john.doe@example.com",
+    },
+  ],
 };
 
 const userSlice = createSlice({
@@ -9,18 +15,18 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     addUser: (state, action) => {
-      state.user.push(action.payload);
+      state.users.push(action.payload);
     },
     editUser: (state, action) => {
-      const index = state.user.findIndex(
+      const index = state.users.findIndex(
         (user) => user.id === action.payload.id
       );
       if (index !== -1) {
-        state.user[index] = action.payload;
+        state.users[index] = action.payload;
       }
     },
     deleteUser: (state, action) => {
-      state.user = state.user.filter((user) => user.id !== action.payload);
+      state.users = state.users.filter((user) => user.id !== action.payload);
     },
   },
 });
