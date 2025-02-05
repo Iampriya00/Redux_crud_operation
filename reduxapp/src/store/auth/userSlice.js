@@ -15,6 +15,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     addUser: (state, action) => {
+      if (!state.users) state.users = []; // Ensure users array exists
       state.users.push(action.payload);
     },
     editUser: (state, action) => {
@@ -22,7 +23,7 @@ const userSlice = createSlice({
         (user) => user.id === action.payload.id
       );
       if (index !== -1) {
-        state.users[index] = action.payload;
+        state.users[index] = { ...state.users[index], ...action.payload };
       }
     },
     deleteUser: (state, action) => {
@@ -32,4 +33,4 @@ const userSlice = createSlice({
 });
 
 export const { addUser, editUser, deleteUser } = userSlice.actions;
-export default userSlice.reducer; // This is the reducer you will import
+export default userSlice.reducer;
